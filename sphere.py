@@ -148,7 +148,6 @@ class Sphere:
         interpolated_colors[:, :, 1] = rbf_g(x, y, z)
         interpolated_colors[:, :, 2] = rbf_b(x, y, z)
 
-        
         interpolated_colors = np.clip(interpolated_colors, 0, 1)
 
         # Plot the spherical gradient
@@ -160,3 +159,6 @@ class Sphere:
             plt.show()
 
         return
+
+test = Sphere('el_primo.jpg', True, True)
+test.generate_sphere()
