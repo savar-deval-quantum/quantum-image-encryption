@@ -73,46 +73,28 @@ class Sphere:
     def fibonacci(self): 
 
         n_pixels, pixel_values = self.get_pixels()
-        width = math.sqrt(n_pixels)
-
-        points = []
+        
         phi = math.pi * (math.sqrt(5) - 1)
 
-        for i in range(n_pixels): 
+        indices = np.arange(0, n_pixels)
 
-            ## y goes from 1 to -1 ##
-            y = 1 - (i / float(n_pixels - 1)) * 2 
-            radius = math.sqrt(1 - y * y) 
+        ## y goes from 1 to -1 ##
+        y = 1 - (indices / float(n_pixels - 1)) * 2
+        radius = np.sqrt(1 - y * y) 
 
-            theta = phi * i 
+        theta = phi * indices
+        x = np.cos(theta) * radius 
+        z = np.sin(theta) * radius
 
-            x = math.cos(theta) * radius 
-            z = math.sin(theta) * radius 
+        points = np.column_stack((x, y, z))
 
-            points.append((x, y, z))
-
-        pixel_points = np.array([
-            [points[0], pixel_values[0]]
-        ])
-
-        for i in range(len(points) - 1): 
-            pixel_points = np.append(
-                pixel_points, 
-                [[points[i+1], pixel_values[i+1]]], 
-                axis = 0
-            )
-
-        if self.show_sphere: 
+        if self.show_sphere:
             ax = plt.figure().add_subplot(projection = '3d')
-
-            for i in range(len(points)): 
-                ax.scatter(pixel_points[i][0][0], 
-                           pixel_points[i][0][1], 
-                           pixel_points[i][0][2], 
-                           c = pixel_points[i][1].reshape(1, -1), 
+            ax.scatter(points[:, 0], points[:, 1], 
+                       points[:, 2], c = pixel_values, 
                            marker = '+'
                 )
-
+            
             ax.set_xlabel('$x$')
             ax.set_ylabel('$y$')
             ax.set_zlabel('$z$')
@@ -122,21 +104,21 @@ class Sphere:
         if self.verbose: 
             print(f"{len(points)} total pixels")
 
-        return pixel_points 
+        return points, pixel_values 
 
     def generate_sphere(self): 
 
-        pixel_points = self.fibonacci()
+        points, pixel_values = self.fibonacci()
 
-        coords = np.array([point[0] for point in pixel_points])
-        colors = np.array([point[1] for point in pixel_points])
+        coords = points
+        colors = pixel_values
 
         # RBF Interpolation for each color channel
         rbf_r = Rbf(coords[:, 0], coords[:, 1], coords[:, 2], colors[:, 0], function='linear')
         rbf_g = Rbf(coords[:, 0], coords[:, 1], coords[:, 2], colors[:, 1], function='linear')
         rbf_b = Rbf(coords[:, 0], coords[:, 1], coords[:, 2], colors[:, 2], function='linear')
 
-        # mesh grid
+        # Mesh grid
         phi, theta = np.mgrid[0.0:np.pi:200j, 0.0:2.0*np.pi:200j]
         x = np.sin(phi) * np.cos(theta)
         y = np.sin(phi) * np.sin(theta)
@@ -160,5 +142,5 @@ class Sphere:
 
         return
 
-test = Sphere('el_primo.jpg', True, True)
+test = Sphere('images/test.png', True, True)
 test.generate_sphere()
