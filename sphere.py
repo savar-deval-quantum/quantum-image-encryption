@@ -73,9 +73,7 @@ class Sphere:
     def fibonacci(self): 
 
         n_pixels, pixel_values = self.get_pixels()
-        width = math.sqrt(n_pixels)
-
-        points = []
+        
         phi = math.pi * (math.sqrt(5) - 1)
 
         indices = np.arange(0, n_pixels)
