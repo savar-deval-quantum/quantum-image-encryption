@@ -1,0 +1,333 @@
+\documentclass[svgnames]{article}     % use "amsart" instead of "article" for AMSLaTeX format
+%\geometry{landscape}                 % Activate for rotated page geometry
+
+%\usepackage[parfill]{parskip}        % Activate to begin paragraphs with an empty line rather than an indent
+
+\usepackage{graphicx}                 % Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+
+%maths                                % TeX will automatically convert eps --> pdf in pdflatex
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{esint}
+\usepackage{geometry}
+\usepackage{hyperref}
+
+\hypersetup{
+  colorlinks=true, 
+  linkcolor=magenta,
+}
+
+% Inverting Color of PDF
+%\usepackage{xcolor}
+%\pagecolor[rgb]{0.19,0.19,0.19}
+%\color[rgb]{0.77,0.77,0.77}
+
+%noindent
+\setlength\parindent{0pt}
+
+%pgfplots
+\usepackage{pgfplots}
+
+%images
+\graphicspath{{/Users/devaldeliwala/screenshots/}}                   % Activate to set a image directory
+
+%tikz
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.15}
+\usepackage{comment}
+\usetikzlibrary{arrows}
+\usepackage[most]{tcolorbox}
+
+%Figures
+\usepackage{float}
+\usepackage{caption}
+\usepackage{lipsum}
+
+
+\title{Past Research}
+\author{Deval Deliwala}
+%\date{}                              % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+%\tableofcontents                     % Activate to display a table of contents
+
+
+\section{NEQRX: Efficient Quantum Image Encryption with Reduced Circuit
+Complexity} 
+
+\href{https://arxiv.org/pdf/2204.07996}{Reference} 
+
+\vspace{10px}
+
+Various methods have emerged to compute and store digital image information on
+a quantum computer. The main two methods are 
+
+\subsection{Flexible Representation of Quantum Images (FQRI)} 
+
+Using FQRI, the positions $(x, y)$ of every pixel in an $n\times n$ image is encoded in a quantum
+register containining $2n$ qubits. The intensity of each pixel is encoded using
+the rotational angle of a separate qubit. \\
+
+Therefore each of the $2n$ qubits contain their \textit{own} qubit
+$|\psi\rangle$, where 
+
+\[
+|\psi\rangle = \cos\theta |0\rangle + \sin\theta | 1 \rangle.
+\] \vspace{3px}
+
+and $\theta$ is the angle representing the pixel's intensity. Therefore, an
+image with $N$ pixels (where $N = 2^n$) is represented as a quantum state: 
+
+\[
+|\psi\rangle = \frac{1}{N}\sum_{Y=0}^{N-1} \sum_{X=0}^{N-1} \left(
+  \cos\theta_{YX} 
+| 0 \rangle + \sin\theta_{YX} | 1 \rangle\right) \otimes |YX\rangle
+\] \vspace{3px}
+
+Here $|YX\rangle$ represents the binary encoding of the pixel position, and
+$\theta_i$ represents the intensity angle for pixel at position $(X, Y)$. 
+
+
+\paragraph{Example} \mbox{} \\
+
+For a 2x2 image with grayscale values, the encoding process can be summarized
+as follows: 
+
+\begin{itemize}
+  \item[1.] \textbf{Image Matrix}: Suppose the image matrix is
+\end{itemize}
+\[
+\begin{bmatrix}
+  I_{00} & I_{01} \\ I_{10} & I_{11}
+\end{bmatrix}
+\] \vspace{3px}
+
+where $I_{ij}$ represents the intensity of the pixel at position  $(i, j)$. 
+
+ \begin{itemize}
+   \item[2.] Encode the positions using 2 qubits (for 2x2 image, 4 positions:
+     00, 01, 10, 11). 
+    \item[3.] Encode the intensity values using rotation angles: $\theta_{00},
+      \theta_{01}, \theta_{10}, \theta_{11}$. 
+\end{itemize}
+
+The quantum state representing the image $I$ will then be 
+
+\[
+|I\rangle = \frac{1}{2}\left( \cos\theta_{00}| 0 \rangle
++ \sin\theta_{00}| 1 \rangle \right) |00\rangle + \frac{1}{2}\left(
+\cos\theta_{01}| 0 \rangle + \sin\theta_{01} | 1 \rangle \right)|01\rangle
++ \cdots
+\] \vspace{3px}
+
+
+
+Afterwards a bunch of quantum gates are applied to confuse and
+diffuse the quantum states. Then measurement gates are applied collapsing it to
+a classical state, from which the encoded pixel values and positions can be
+retrieved. \\
+
+The time complexity of quantum image preparation for FRQI is too high. For
+a $2^n \times 2^n$ image, the procedure costs  $O(2^{4n})$, quadratic in the
+image size. In addition because the gray-scale information of the image pixels
+is stored as the probability amplitude of a single qubit, accurate image
+retrieval is impossible for FRQI. 
+
+\subsection{NEQR's Improvement} 
+
+\href{https://zero.sci-hub.se/2180/25c5b2e7104ba68813ee5fc81176fb62/zhang2013.pdf}{Reference}\\
+
+\textit{Novel Enhanced Quantum Representation} (NEQR) is very similar to FRQI,
+except for its approach to encoding pixel values. \\
+
+FRQI uses only a single qubit to store the gray-scale information for each
+pixel. NEQR uses two-entangled qubit sequences to store the gray-scale and
+position information, and stores the whole image in the superposition of the
+two qubit sequences. \\
+
+Suppose the gray range of an image is $2^q$, then a binary sequence  $C_{YX}^0
+C_{YX}^1 \hdots C_{YX}^{q-2} C_{YX}^{q-1}$ encodes the gray scale value  $f(Y,
+X)$ of the corresponding pixel $(X, Y)$. Mathematically, 
+
+\[
+  f(Y, X) = C_{YX}^0 C_{YX}^1 \hdots C_{YX}^{q-2} C_{YX}^{q-1}, \; C_{YX}^k \in
+  [0, 1], \qquad f(Y, X) \in [0, 2^{q-1}]
+\] \vspace{3px}
+
+Then the representative expression of a quantum image for a $2^n \times 2^n$
+image can be written as 
+
+ \[
+|I\rangle = \frac{1}{2^n} \sum_{Y=0}^{2^n - 1} \sum_{X=0}^{2^n - 1} |f(Y,
+X)\rangle |YX\rangle = \frac{1}{2^n} \sum_{Y=0}^{2^n - 1} \sum_{X=0}^{2^n-1}
+\otimes_{i=1}^{q-1} |C_{YX}^i\rangle |YX\rangle     
+\] \vspace{3px}
+\begin{figure}[H]
+  \centering
+    \includegraphics[width = 12cm]{screenshot 12.png}
+    \caption{a $2\times 2$ example image and its representative expression in
+    NEQR}
+\end{figure}
+
+The paper in the second reference provides extensive detail on how to
+accomplish encoding a digital image in NEQR. \\
+
+After quantum image preparation has been finished, you can manipulate
+everything reversibly or apply chaotic maps, logistic maps, to confuse and
+diffuse the image in a reversible manner. \\
+
+The specific paper that implements \textit{NEQRX}, just preforms NEQR but
+afterwards adds a generalized affine transformation and a logistic map. They
+also use an \textit{Espresso} algorithm that apparently reduces computational
+cost by 50\%. 
+
+Almost \textit{every} quantum image encryption algorithm can be divided into
+two main types: 
+
+\begin{itemize}
+  \item[1.] Transforming the image into a frequency domain with random
+    operations
+  \item[2.] Encrypting the image using chaos theory
+\end{itemize}
+
+This paper goes into detail about the statistical tests you can employ to
+determine the effectiveness of an encryption algorithm -- mainly
+\textit{Differential Analysis} and a \textit{Histogram Analysis}. It also
+performs a \textit{Complexity Analysis} to assess the complexity of a quantum
+circuit. \\
+
+It afterwards performs a \textit{Noise Analysis}, where they use 6 known noisy
+backends and analyze the effectiveness of their algorithm and its dependence on
+noise.
+
+\section{Quantum Image Encryption Based on Quantum DNA Codec and Pixel-Level
+Scrambling}
+
+This encryption algorithm creates a quantum DNA codec that encodes and decodes
+the pixel color information of a quantum image using ``its special biological
+properties". It afterwards employs \textit{quantum Hilbert Scrambling} to
+muddle the position data in order to double the encryption effect. Then, the
+altered image was then employed as a key matrix in a quantum XOR operation with
+the original image. \\
+
+\subsection{NCQI Model} \mbox{} \\
+
+They use the NCQI model for encoding pixel information in quantum states. It is
+fairly similar to FIQR, where the NCQI model of a $2^n \times 2^n$ image
+$|I\rangle$ can be expressed as 
+
+\[
+  |I\rangle = \frac{1}{2^n} \sum_{Y=0}^{2^n - 1} \sum_{X=0}^{2^n - 1}
+  |C_{YX}\rangle \otimes |YX\rangle
+\] \vspace{3px}
+
+where $|C_{YX}\rangle$ represents the color value of the pixel, which again is
+encoded by a binary sequence $R_{q-1}\hdots R_0 G_{q-1}\hdots G_0 B_{q-1}\hdots
+B_0$. \\
+
+
+\subsection{DNA Coding Method \& Operation}
+
+The ATCG binding rules for DNA state that A \& T are complementary and C \&
+G are complementary. Similarly, in binary, 0 and 1 are complementary, and they
+make certain binary sequences correspond to a DNA nucleoside. For example, for
+a $2 \times 2$ image, with 8 coding schemes in accordance with the rules of
+a biological model that encodes each nucleic acid with a 2-bit binary number, the DNA coding rules are as follows: 
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width = 10cm]{screenshot 13.png}
+    \caption{DNA coding rules}
+\end{figure}
+
+
+Scheme 1 produces CACT is an image pixel's R-channel gray value is 71, which is
+represented by the binary sequence 01000111. 
+
+\subsection{Quantum Hilbert Scrambling} 
+
+Sounds fancy, but they just take the following matrix: 
+
+\[
+H_n = \begin{pmatrix}
+  1 & 2 & 3 & \hdots & 2^n \\ 2^n + 1 & 2^n + 2 & 2^n + 3 & \hdots & 2^n + 1 \\
+  \vdots & \vdots & \vdots & \vdots & \vdots \\
+  2^{2n-1} + 1 & 2^{2^n -1} + 2 & 2^{2^n-1} + 3 & \hdots & 2^{2n}
+\end{pmatrix} 
+\] \vspace{3px}
+
+which employs the following transformation,
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width = 8cm]{screenshot 14.png}
+    \caption{Results of performing a single Hilbert image scrambling}
+\end{figure}
+
+and then apply the following: 
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width = 10cm]{screenshot 15.png}
+\end{figure}
+
+where $A^T$ represents a matrix $A$'s transpose,  $A^{ud}$ its upper and lower
+direction reversed,  $A^{ld}$ its left and right inversion, and  $A^{pp}$ (haha
+pp) its center rotation matrix.\\
+
+They then talk about how they encoded the DNA codec, and applied the quantum
+XOR operation, and afterwards go into the same statistical
+analysis as the previous paper.  
+
+
+\section{Conclusion}
+
+Overall, these were the main two quantum image encryption algorithms that
+encapsulate all previous versions of quantum image encryption. There are many
+models like FIQR, NEQR, or NICQ that display a way to encode an image into
+a quantum state, but all of them are roughly the same apart from different time
+complexities to prepare the quantum state. \\
+
+Our plan, which I think I have perfected, creates a completely new way to
+encode pixel color information, though it requires more qubits (unless we
+discretize an image into blocks of qubits, while somehow retaining the
+information of all pixels in a block, maybe by entangling the block-statevector
+with another qubit which holds all the RGB info for each pixel \textit{in} the
+block?). 
+
+I'll start working on the paper that goes into the plan and have it ready soon.
+
+\subsection{References}
+
+\subsubsection{Chaos Theory Papers}
+
+\href{https://zero.sci-hub.se/2180/25c5b2e7104ba68813ee5fc81176fb62/zhang2013.pdf}{NEQR}\\
+\href{https://www.researchgate.net/publication/235800177_A_flexible_representation_of_quantum_images_for_polynomial_preparation_image_compression_and_processing_operations_Quantum_Inf}{FIQR}\\
+\href{https://arxiv.org/pdf/2204.07996}{NEQRX} \\
+\href{https://www.frontiersin.org/journals/physics/articles/10.3389/fphy.2024.1230294/full}{Four-Dimensional
+Chaos} \\
+\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8871303/}{Logistic Quantum
+Chaos}\\
+
+
+
+
+There are many others, but I do not have access to them and they are all
+roughly the same -- apply a logistic map, or rounds of different logistic maps
+to scramble, then apply some color diffusing technique to gray-ify the image
+and so on. The other types of image encryption, that just perform scrambling by
+applying a bunch of other transformations are similar to the DNA codec paper or any other
+classical technique, while still applying NEQR or FIQR. \\
+
+The good news is that our idea is very novel and has a different way of encoding
+information outside of FIQR or NEQR, and lowkey, is better than all of
+them ong. 
+
+
+
+
+\end{document}
+
